@@ -1,20 +1,47 @@
 import argparse
+import json
+
+file_path = "data/habits.json"
 
 
-def add_habit(name):
-    pass
+def add_habit(args):
+    """Adds the habit to the Json file
+
+    Args:
+        args (_type_): _command line arguments
+    """
+    print(f"Adding habit: {args.name}")
+    new_entry = {
+        "Name": args.name,
+        "Streak": 0,
+    }
+
+    try:
+        with open(file_path, "r") as json_file:
+            data = json.load(json_file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        data = {}
+
+    if args.name in data:
+        print(f"Habit '{args.name}' already exists.")
+        return
+    data[args.name] = new_entry
+
+    with open(file_path, "w") as json_file:
+        json.dump(data, json_file, indent=4)
+    print(f"Habit '{args.name}' added successfully.")
 
 
-def list_habits():
-    pass
+def list_habits(args):
+    print("Listing all habits")
 
 
-def check_habit(name):
-    pass
+def check_habit(args):
+    print(f"Checking off habit: {args.name}")
 
 
-def remove_habit(name):
-    pass
+def remove_habit(args):
+    print(f"Removing habit: {args.name}")
 
 
 def main():
