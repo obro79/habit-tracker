@@ -1,0 +1,7 @@
+{
+    "Workout": {
+        "description": "Daily exercise routine",
+        "frequency": "Daily",
+        "streak": 15
+    }
+}
