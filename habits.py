@@ -23,8 +23,7 @@ def add_habit(args):
         data = {}
 
     if args.name in data:
-        print(f"Habit '{args.name}' already exists.")
-        return
+        raise ValueError(f"Habit '{args.name}' already exists.")
     data[args.name] = new_entry
 
     with open(file_path, "w") as json_file:
@@ -33,7 +32,16 @@ def add_habit(args):
 
 
 def list_habits(args):
-    print("Listing all habits")
+    """List all habits in the Json file"""
+    try:
+        with open(file_path, "r") as json_file:
+            data = json.load(json_file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        data = {}
+
+    res = [f"- {habit['Name']}: Streak {habit['Streak']}" for habit in data.values()]
+    for line in res:
+        print(line)
 
 
 def check_habit(args):
