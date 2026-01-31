@@ -44,7 +44,7 @@ def add_habit(args):
 
 
 def list_habits(args):
-    """List all habits in the Json file"""
+    """List all habits in the JSON file"""
 
     data = get_json()
     if not data:
@@ -111,6 +111,28 @@ def remove_habit(args):
     print("Habit was removed successfully")
 
 
+def get_stats_all(args):
+    """Get statistics for all habits"""
+    data = get_json()
+    if not data:
+        print("No habits found.")
+        return
+    for item in data.items():
+        get_stats_habit(argparse.Namespace(name=item[0]))
+
+
+def get_stats_habit(args):
+    """Get statistics for a specific habit"""
+    data = get_json()
+    if args.name not in data:
+        raise ValueError(f"Habit '{args.name}' does not exist.")
+
+    habit = data[args.name]
+    print(f"Statistics for habit '{args.name}':")
+    print(f"  Streak: {habit['streak']}")
+    print(f"  Last Checked: {habit['last_checked']}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Habit Tracker CLI")
 
@@ -134,6 +156,15 @@ def main():
     streak_parser = subparsers.add_parser("streak", help="Get habit streak")
     streak_parser.add_argument("name", type=str, help="Name of the habit")
     streak_parser.set_defaults(func=get_streak)
+
+    stat_parser = subparsers.add_parser("stats", help="Get habit statistics")
+    stat_parser.add_argument("name", type=str, nargs="?", help="Name of the habit")
+    stat_parser.set_defaults(func=get_stats_habit)
+
+    stat_all_parser = subparsers.add_parser(
+        "stats-all", help="Get all habit statistics"
+    )
+    stat_all_parser.set_defaults(func=get_stats_all)
 
     args = parser.parse_args()
     args.func(args)
