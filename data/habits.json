@@ -1,17 +1,17 @@
 {
-    "Workout": {
-        "Name": "Workout",
-        "Streak": 0,
-        "Last Checked": "2026-01-30"
+    "workout": {
+        "name": "workout",
+        "streak": 0,
+        "last_checked": null
     },
-    "brush-teeth": {
-        "Name": "brush-teeth",
-        "Streak": 0,
-        "Last Checked": "2026-01-30"
+    "BrushTeeth": {
+        "name": "BrushTeeth",
+        "streak": 0,
+        "last_checked": null
     },
-    "leetcode": {
-        "Name": "leetcode",
-        "Streak": 0,
-        "Last Checked": "2026-01-30"
+    "Leetcode": {
+        "name": "Leetcode",
+        "streak": 0,
+        "last_checked": null
     }
 }
