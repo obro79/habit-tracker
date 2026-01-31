@@ -1,22 +1,8 @@
 import argparse
-import json
 from datetime import date, timedelta
+from utils import get_json, save_json
 
 file_path = "data/habits.json"
-
-
-def get_json(file_path=file_path):
-    try:
-        with open(file_path, "r") as json_file:
-            data = json.load(json_file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {}
-    return data
-
-
-def save_json(data):
-    with open(file_path, "w") as json_file:
-        json.dump(data, json_file, indent=4)
 
 
 def add_habit(args):
