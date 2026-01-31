@@ -40,5 +40,27 @@ def send_notification():
         subprocess.run(["osascript", "-e", script], check=True)
 
 
+def send_task_notification():
+    """Sends a desktop notification for tasks due today using osascript (macOS)"""
+    try:
+        with open("data/tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = {}
+
+    today = date.today().isoformat()
+    tasks_due_today = [
+        name
+        for name, info in tasks.items()
+        if info["due"] == today and not info.get("completed", False)
+    ]
+
+    for task in tasks_due_today:
+        message = f"You have a task due today: {task}"
+        script = f'display notification "{message}" with title "Task Reminder" sound name "Ping"'
+        subprocess.run(["osascript", "-e", script], check=True)
+
+
 if __name__ == "__main__":
     send_notification()
+    send_task_notification()
