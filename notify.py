@@ -36,7 +36,7 @@ def send_notification():
     unchecked_habits = get_unchecked_habits(get_data())
     for habit in unchecked_habits:
         message = f"You have not completed your habit: {habit}"
-        script = f'display notification "{message}" with title "Habit Tracker"'
+        script = f'display notification "{message}" with title "Habit Tracker" sound name "Ping"'
         subprocess.run(["osascript", "-e", script], check=True)
 
 
