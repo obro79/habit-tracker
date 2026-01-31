@@ -82,6 +82,17 @@ def check_habit(args):
     print(f"Habit '{args.name}' checked successfully.")
 
 
+def get_streak(args):
+    """Get the current streak of a habit"""
+
+    data = get_json()
+    if args.name not in data:
+        raise ValueError(f"Habit '{args.name}' does not exist.")
+
+    habit = data[args.name]
+    print(f"Habit '{args.name}' has a streak of {habit['streak']}.")
+
+
 def remove_habit(args):
     """Removes a habit from the Json file
 
@@ -119,6 +130,10 @@ def main():
     remove_parser = subparsers.add_parser("remove", help="Remove a habits")
     remove_parser.add_argument("name", type=str, help="Name of the habit")
     remove_parser.set_defaults(func=remove_habit)
+
+    streak_parser = subparsers.add_parser("streak", help="Get habit streak")
+    streak_parser.add_argument("name", type=str, help="Name of the habit")
+    streak_parser.set_defaults(func=get_streak)
 
     args = parser.parse_args()
     args.func(args)
