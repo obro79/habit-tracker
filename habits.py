@@ -5,6 +5,20 @@ from datetime import date, timedelta
 file_path = "data/habits.json"
 
 
+def get_json(file_path=file_path):
+    try:
+        with open(file_path, "r") as json_file:
+            data = json.load(json_file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        data = {}
+    return data
+
+
+def save_json(data):
+    with open(file_path, "w") as json_file:
+        json.dump(data, json_file, indent=4)
+
+
 def add_habit(args):
     """Adds the habit to the Json file
 
@@ -13,35 +27,31 @@ def add_habit(args):
     """
     print(f"Adding habit: {args.name}")
     new_entry = {
-        "Name": args.name,
-        "Streak": 0,
-        "Last Checked": date.today().isoformat(),
+        "name": args.name,
+        "streak": 0,
+        "last_checked": None,
     }
 
-    try:
-        with open(file_path, "r") as json_file:
-            data = json.load(json_file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {}
+    data = get_json()
 
     if args.name in data:
-        raise ValueError(f"Habit '{args.name}' already exists.")
+        print(f"Error: Habit '{args.name}' already exists.")
+        return
     data[args.name] = new_entry
 
-    with open(file_path, "w") as json_file:
-        json.dump(data, json_file, indent=4)
+    save_json(data)
     print(f"Habit '{args.name}' added successfully.")
 
 
 def list_habits(args):
     """List all habits in the Json file"""
-    try:
-        with open(file_path, "r") as json_file:
-            data = json.load(json_file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {}
 
-    res = [f"- {habit['Name']}: Streak {habit['Streak']}" for habit in data.values()]
+    data = get_json()
+    if not data:
+        print("No habits found.")
+        return
+
+    res = [f"- {habit['name']}: Streak {habit['streak']}" for habit in data.values()]
     for line in res:
         print(line)
 
@@ -49,29 +59,26 @@ def list_habits(args):
 def check_habit(args):
     """Check off a habit for today"""
 
-    try:
-        with open(file_path, "r") as json_file:
-            data = json.load(json_file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {}
+    data = get_json()
     if args.name not in data:
         raise ValueError(f"Habit '{args.name}' does not exist.")
 
     habit = data[args.name]
-    last_checked = date.fromisoformat(habit["Last Checked"])
+    last_checked = (
+        date.fromisoformat(habit["last_checked"]) if habit["last_checked"] else None
+    )
     today = date.today()
     if last_checked == today:
         print(f"Habit '{args.name}' already checked for today.")
         return
     elif last_checked == today - timedelta(days=1):
-        habit["Streak"] += 1
+        habit["streak"] += 1
     else:
-        habit["Streak"] = 1
+        habit["streak"] = 1
 
-    habit["Last Checked"] = today.isoformat()
+    habit["last_checked"] = today.isoformat()
 
-    with open(file_path, "w") as json_file:
-        json.dump(data, json_file, indent=4)
+    save_json(data)
     print(f"Habit '{args.name}' checked successfully.")
 
 
@@ -81,19 +88,14 @@ def remove_habit(args):
     Args:
         args (_type_): _command line arguments
     """
-    try:
-        with open(file_path, mode="r") as json_file:
-            data = json.load(json_file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {}
+    data = get_json()
 
     if args.name in data:
         del data[args.name]
+        save_json(data)
     else:
         print(f"{args.name} was already removed")
-
-    with open(file_path, mode="w") as json_file:
-        json.dump(data, json_file, indent=4)
+        return
 
     print("Habit was removed successfully")
 

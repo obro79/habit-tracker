@@ -1,1 +1,17 @@
-{}
+{
+    "Workout": {
+        "Name": "Workout",
+        "Streak": 0,
+        "Last Checked": "2026-01-30"
+    },
+    "brush-teeth": {
+        "Name": "brush-teeth",
+        "Streak": 0,
+        "Last Checked": "2026-01-30"
+    },
+    "leetcode": {
+        "Name": "leetcode",
+        "Streak": 0,
+        "Last Checked": "2026-01-30"
+    }
+}
