@@ -30,6 +30,8 @@ def add_habit(args):
         "name": args.name,
         "streak": 0,
         "last_checked": None,
+        "history": [],
+        "best_streak": 0,
     }
 
     data = get_json()
@@ -73,10 +75,13 @@ def check_habit(args):
         return
     elif last_checked == today - timedelta(days=1):
         habit["streak"] += 1
+        if habit["streak"] > habit["best_streak"]:
+            habit["best_streak"] = habit["streak"]
     else:
         habit["streak"] = 1
 
     habit["last_checked"] = today.isoformat()
+    habit["history"].append(habit["last_checked"])
 
     save_json(data)
     print(f"Habit '{args.name}' checked successfully.")
@@ -131,6 +136,7 @@ def get_stats_habit(args):
     print(f"Statistics for habit '{args.name}':")
     print(f"  Streak: {habit['streak']}")
     print(f"  Last Checked: {habit['last_checked']}")
+    print(f"  History: {', '.join(habit['history'])}")
 
 
 def main():
