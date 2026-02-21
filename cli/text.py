@@ -3,7 +3,7 @@
 import os
 from twilio.rest import Client
 from google import genai
-from gemini_prompt import TEXT_PROMPT
+from cli.gemini_prompt import TEXT_PROMPT
 from dotenv import load_dotenv
 
 load_dotenv()

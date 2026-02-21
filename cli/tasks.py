@@ -1,7 +1,7 @@
 import argparse
 from ast import arg
 from datetime import date
-from utils import get_json, save_json
+from cli.utils import get_json, save_json
 
 habit_file_path = "data/tasks.json"
 

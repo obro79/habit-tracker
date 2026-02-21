@@ -1,6 +1,6 @@
 import argparse
 from datetime import date, timedelta
-from utils import get_json, save_json
+from cli.utils import get_json, save_json
 
 file_path = "data/habits.json"
 
