@@ -9,7 +9,6 @@ class HabitCreate(BaseModel):
     name: str
     description: str
     frequency: str
-    userId: str
 
 
 class Habit(BaseModel):
@@ -20,28 +19,28 @@ class Habit(BaseModel):
     userId: str
 
 
-@router.get("/users/{user_id}/{habit_id}", response_model=Habit)
-async def get_habit(habit_id: str):
-    habit = await db.habit.find_unique(where={"id": habit_id})
+@router.get("/{habit_id}", response_model=Habit)
+async def get_habit(user_id: str, habit_id: str):
+    habit = await db.habit.find_unique(where={"id": habit_id, "userId": user_id})
     if not habit:
         raise HTTPException(status_code=404, detail="Habit not found")
     return habit
 
 
-@router.get("/use", response_model=list[Habit])
-async def list_habits():
-    habits = await db.habit.find_many()
+@router.get("/", response_model=list[Habit])
+async def list_habits(user_id: str):
+    habits = await db.habit.find_many(where={"userId": user_id})
     return habits
 
 
 @router.post("/", response_model=Habit)
-async def create_habit(habit: HabitCreate):
+async def create_habit(user_id: str, habit: HabitCreate):
     new_habit = await db.habit.create(
         data={
             "name": habit.name,
             "description": habit.description,
             "frequency": habit.frequency,
-            "userId": habit.userId,
+            "userId": user_id,
         }
     )
     return new_habit

@@ -5,50 +5,54 @@ from app.db import db
 router = APIRouter()
 
 
-class HabitCreate(BaseModel):
-    name: str
-    description: str
-    frequency: str
-    userId: str
+class TaskCreate(BaseModel):
+    taskId: str
+    category: str
+    dueDate: str
+    priority: str
 
 
-class Habit(BaseModel):
+class Task(BaseModel):
     id: str
-    name: str
-    description: str
-    frequency: str
+    taskId: str
+    category: str
     userId: str
+    dueDate: str
+    priority: str
 
 
-class HabitUpdate(BaseModel):
-    name: str | None = None
-    description: str | None = None
-    frequency: str | None = None
-    userId: str | None = None
+@router.get("/{task_id}", response_model=Task)
+async def get_task(user_id: str, task_id: str):
+    task = await db.task.find_unique(where={"id": task_id})
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
 
 
-@router.get("/{task_id}", response_model=Habit)
-async def get_habit(habit_id: str):
-    habit = await db.habit.find_unique(where={"id": habit_id})
-    if not habit:
-        raise HTTPException(status_code=404, detail="Habit not found")
-    return habit
+@router.get("/", response_model=list[Task])
+async def list_tasks(user_id: str):
+    tasks = await db.task.find_many(where={"userId": user_id})
+    return tasks
 
 
-@router.get("/", response_model=list[Habit])
-async def list_habits(user_id: str):
-    habits = await db.habit.find_many(where={"userId": user_id})
-    return habits
-
-
-@router.post("/", response_model=Habit)
-async def create_habit(habit: HabitCreate):
-    new_habit = await db.habit.create(
+@router.post("/", response_model=Task)
+async def create_task(user_id: str, task: TaskCreate):
+    new_task = await db.task.create(
         data={
-            "name": habit.name,
-            "description": habit.description,
-            "frequency": habit.frequency,
-            "userId": habit.userId,
+            "taskId": task.taskId,
+            "category": task.category,
+            "dueDate": task.dueDate,
+            "priority": task.priority,
+            "userId": user_id,
         }
     )
-    return new_habit
+    return new_task
+
+
+@router.delete("/{task_id}")
+async def delete_task(user_id: str, task_id: str):
+    task = await db.task.find_unique(where={"id": task_id})
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    await db.task.delete(where={"id": task_id})
+    return {"detail": "Task deleted"}
