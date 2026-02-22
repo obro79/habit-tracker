@@ -39,6 +39,8 @@ async def delete_user(user_id: str):
     user = await db.user.find_unique(where={"id": user_id})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    await db.habit.delete_many(where={"userId": user_id})
+    await db.task.delete_many(where={"userId": user_id})
     await db.user.delete(where={"id": user_id})
     return {"detail": "User deleted"}
 

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.db import db
@@ -8,7 +10,7 @@ router = APIRouter()
 class TaskCreate(BaseModel):
     taskId: str
     category: str
-    dueDate: str
+    dueDate: datetime
     priority: str
 
 
@@ -17,7 +19,7 @@ class Task(BaseModel):
     taskId: str
     category: str
     userId: str
-    dueDate: str
+    dueDate: datetime
     priority: str
 
 
@@ -43,7 +45,7 @@ async def create_task(user_id: str, task: TaskCreate):
             "category": task.category,
             "dueDate": task.dueDate,
             "priority": task.priority,
-            "userId": user_id,
+            "user": {"connect": {"id": user_id}},
         }
     )
     return new_task

@@ -40,7 +40,7 @@ async def create_habit(user_id: str, habit: HabitCreate):
             "name": habit.name,
             "description": habit.description,
             "frequency": habit.frequency,
-            "userId": user_id,
+            "user": {"connect": {"id": user_id}},
         }
     )
     return new_habit
