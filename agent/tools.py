@@ -3,8 +3,6 @@ from datetime import datetime
 from app.db import db
 
 
-# Tools
-
 
 async def add_habit(user_id: str, name: str, description: str, frequency: str):
     """Add a new habit for the user.
@@ -134,23 +132,6 @@ async def check_task(user_id: str, name: str):
     return {"status": "completed", "name": found.taskId}
 
 
-async def get_unfinished_tasks(user_id: str):
-    """Returns all tasks that are not yet completed for the user.
-
-    Args:
-        user_id: The user's ID
-    """
-    return await list_tasks(user_id)
-
-
-async def get_unfinished_habits(user_id: str):
-    """Returns habits the user hasn't checked off today.
-
-    Args:
-        user_id: The user's ID
-    """
-    return await list_habits(user_id)
-
 
 async def plan_day(user_id: str):
     """Returns all habits and tasks to help the user plan their day.
@@ -170,8 +151,6 @@ ALL_TOOLS = [
     list_tasks,
     check_habit,
     check_task,
-    get_unfinished_tasks,
-    get_unfinished_habits,
     plan_day,
 ]
 

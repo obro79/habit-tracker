@@ -8,16 +8,19 @@ router = APIRouter()
 class UserCreate(BaseModel):
     email: str
     password: str
+    phoneNumber: str
 
 
 class User(BaseModel):
     id: str
     email: str
+    phoneNumber: str | None = None
 
 
 class UserUpdate(BaseModel):
     email: str | None = None
     password: str | None = None
+    phoneNumber: str | None = None
 
 
 @router.get("/{user_id}", response_model=User)
@@ -51,6 +54,7 @@ async def create_user(user: UserCreate):
         data={
             "email": user.email,
             "password": user.password,
+            "phoneNumber": user.phoneNumber,
         }
     )
     return new_user
@@ -68,6 +72,11 @@ async def update_user(user_id: str, user: UserUpdate):
             "password": (
                 user.password if user.password is not None else existing_user.password
             ),
+            "phoneNumber": (
+                user.phoneNumber if user.phoneNumber is not None else existing_user.phoneNumber
+            ),
         },
     )
     return updated_user
+
+
