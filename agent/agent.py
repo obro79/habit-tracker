@@ -8,16 +8,32 @@ from agent.tools import ALL_TOOLS, TOOL_MAP
 
 load_dotenv()
 
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-config = types.GenerateContentConfig(
-    tools=ALL_TOOLS,
-    automatic_function_calling=types.AutomaticFunctionCallingConfig(
-        disable=True
-    ),
-)
+_client = None
+_config = None
+
+
+def _get_client():
+    global _client
+    if _client is None:
+        _client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    return _client
+
+
+def _get_config():
+    global _config
+    if _config is None:
+        _config = types.GenerateContentConfig(
+            tools=ALL_TOOLS,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                disable=True
+            ),
+        )
+    return _config
 
 
 async def handle_message(user_id: str, message: str) -> str:
+    client = _get_client()
+    config = _get_config()
     contents = [message]
 
     for _ in range(10):
